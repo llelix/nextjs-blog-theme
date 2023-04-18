@@ -1,7 +1,90 @@
----
-title: Design critiques at Figma
-description: "Consider that for a moment: everything we see around us is assumed to have had a cause and is contingent upon."
-date: Jan 2 2021
----
+<img src="http://jgbim.qhfct.com:9998/public/image/979b59b6669c4c2084cc09944b34ba0a.png" style="zoom:33%;" />
 
-This is an example post. There's another one [here](/posts/example-post).
+### 上传typora脚本制作
+
+1. 有一个可以储存的云服务,任何云服务都可以  这里是自建的一个
+
+2. 测试一下在云服务中能够成功上传照片  在postman测试
+
+3. 写一个程序,任何程序都可以 node python java shell cmd都可以,用来发起请求上传照片 ,一定控制台**打印** (python的**print**,js的**console.log**....)
+
+   ```
+   Upload Success: \n
+   链接1 \n
+   链接2 \n
+   .....
+   ```
+
+4. 在typora偏好设置中的[上传服务]选中Custom Commdline 选中自己要使用的程序脚本
+
+   
+
+5. 测试! 控制台返回 则成功
+
+   ```
+   Upload Success: \n
+   链接1 \n
+   链接2 \n
+   ```
+
+node C:\Users\wowan\Desktop\ts\upper\up.js 
+
+​	
+
+```
+// 上传多个文件到OSS存储服务
+const axios = require('axios');
+const fs = require('fs');
+const { resourceLimits } = require('worker_threads');
+const FormData = require('form-data');
+
+// 从命令行参数中获取要上传的文件路径列表
+const filePathList = process.argv.slice(2);
+
+// 如果没有指定要上传的文件，则输出提示信息并退出程序
+if (filePathList.length === 0) {
+  console.error('请指定要上传的文件路径！');
+  process.exit(1);
+}
+
+// OSS存储服务API地址
+const apiUrl = 'xxxxxxxxxxxxxxxxxxx';
+let result="Upload Success: \n";
+// 设置请求头
+const headers = {
+  'AccessKey': 'xxxxxxxx',
+  'SecretKey': 'xxxxxxxxx',
+  'AppId': 'xxxxxxx',
+  'Content-Type': 'multipart/form-data'
+};
+
+// 定义一个异步函数，用于上传一个文件
+async function uploadFile(filePath) {
+  // 创建form-data表单
+  const formData = new FormData();
+  formData.append('file', fs.createReadStream(filePath));
+
+  try {
+    // 发送POST请求上传图片
+    const response = await axios.post(apiUrl, formData, { headers });
+    result += response.data.data+"\n";
+    return response.data;
+  } catch (error) {
+    console.error(`上传失败：${error}`);
+    throw error;
+  }
+}
+
+// 遍历文件路径列表，上传每个文件
+(async () => {
+  for (const filePath of filePathList) {
+    await uploadFile(filePath);
+  }
+    console.log(result);
+})();
+
+
+
+```
+
+
