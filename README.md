@@ -1,17 +1,16 @@
-![Netlify Next.js Blog Template designed by Bejamas](github-banner.svg)
+![Netlify Next.js Blog Template designed by Bejamas](https://user-images.githubusercontent.com/43764894/223762618-62742b4e-9424-44a7-8e85-9f7e4e19db54.png)
+
 
 [![Deploy to Netlify Button](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/netlify-templates/nextjs-blog-theme)
 
+
 A customizable blog starter using:
 
-- [Next.js](https://github.com/vercel/next.js) v12
-- [Tailwind](https://tailwindcss.com/) v3.0
-- Built-in [MDX](https://mdxjs.com/) v1 support
+- [Next.js](https://github.com/vercel/next.js) v15 (Pages Router)
+- [Tailwind](https://tailwindcss.com/) v4.x
+- [Netlify Visual Editor](https://docs.netlify.com/visual-editor/overview/)
+- Built-in [MDX](https://mdxjs.com/) support
 - Includes modern design with dark & light themes
-
-> 🎉 We’re really excited about the Bejamas + Netlify collaboration and we were going to celebrate it with some swag, but we realized we could put that money into supporting OSS and our ecosystem even more! After all, who needs another t-shirt or sticker?!
->
-> [Click this link](https://oss-form.netlify.app/) to vote for your favorite Open Source project!
 
 ![Preview of blog theme. Author named Jay Doe and blog's name is "Next.js Blog Theme" with one blog post](nextjs-blog-theme-preview.png)
 
@@ -26,10 +25,10 @@ A customizable blog starter using:
   - [Using the Wizard](#using-the-setup-wizard)
 - [Configuring the Blog](#configuring-the-blog)
 - [Adding New Posts](#adding-new-posts)
+- [Netlify Visual Editor](#netlify-visual-editor)
 - [Testing](#testing)
   - [Included Default Testing](#included-default-testing)
   - [Removing Renovate](#removing-renovate)
-  - [Removing Cypress](#removing-cypress)
 
 ## Getting Started
 
@@ -96,6 +95,39 @@ https://user-images.githubusercontent.com/3611928/152727802-102ec296-41c8-446d-9
 
 [alt: video walkthrough of adding a new blog post]
 
+## Netlify Visual Editor
+
+This template is configured to work with [visual editing](https://docs.netlify.com/visual-editor/overview/) and [Git Content Source](https://docs.netlify.com/create/content-sources/git/).
+
+### Develop with Netlify Visual Editor Locally
+
+The typical development process is to begin by working locally. Clone this repository, then run `npm install` in its root directory.
+
+Run the Next.js development server:
+
+```txt
+cd nextjs-blog-theme
+npm run dev
+```
+
+Install the [Netlify Visual Editor CLI](https://www.npmjs.com/package/@stackbit/cli). Then open a new terminal window in the same project directory and run the Netlify visual editor dev server:
+
+```txt
+npm install -g @stackbit/cli
+stackbit dev
+```
+
+This outputs your own Netlify visual editor URL. Open this, register, or sign in, and you will be directed to Netlify's visual editor for your new project.
+
+![Next.js Dev + Visual Editor Dev](https://assets.stackbit.com/docs/next-dev-stackbit-dev.png)
+
+### Next Steps
+
+Here are a few suggestions on what to do next if you're new to Netlify Visual Editor:
+
+- Learn [Netlify visual editor overview](https://docs.netlify.com/visual-editor/visual-editing/)
+- Check [Netlify visual editor reference documentation](https://visual-editor-reference.netlify.com/)
+
 ## Testing
 
 ### Included Default Testing
@@ -103,8 +135,6 @@ https://user-images.githubusercontent.com/3611928/152727802-102ec296-41c8-446d-9
 We’ve included some tooling that helps us maintain these templates. This template currently uses:
 
 - [Renovate](https://www.mend.io/free-developer-tools/renovate/) - to regularly update our dependencies
-- [Cypress](https://www.cypress.io/) - to run tests against how the template runs in the browser
-- [Cypress Netlify Build Plugin](https://github.com/cypress-io/netlify-plugin-cypress) - to run our tests during our build process
 
 If your team is not interested in this tooling, you can remove them with ease!
 
@@ -112,28 +142,6 @@ If your team is not interested in this tooling, you can remove them with ease!
 
 In order to keep our project up-to-date with dependencies we use a tool called [Renovate](https://github.com/marketplace/renovate). If you’re not interested in this tooling, delete the `renovate.json` file and commit that onto your main branch.
 
-### Removing Cypress
+## Support
 
-For our testing, we use [Cypress](https://www.cypress.io/) for end-to-end testing. This makes sure that we can validate that our templates are rendering and displaying as we’d expect. By default, we have Cypress not generate deploy links if our tests don’t pass. If you’d like to keep Cypress and still generate the deploy links, go into your `netlify.toml` and delete the plugin configuration lines:
-
-```diff
-[[plugins]]
-  package = "netlify-plugin-cypress"
--  [plugins.inputs.postBuild]
--    enable = true
--
--  [plugins.inputs]
--    enable = false
-```
-
-If you’d like to remove the `netlify-plugin-cypress` build plugin entirely, you’d need to delete the entire block above instead. And then make sure sure to remove the package from the dependencies using:
-
-```bash
-npm uninstall -D netlify-plugin-cypress
-```
-
-And lastly if you’d like to remove Cypress entirely, delete the entire `cypress` folder and the `cypress.config.ts` file. Then remove the dependency using:
-
-```bash
-npm uninstall cypress
-```
+If you get stuck along the way, get help in our [support forums](https://answers.netlify.com/).
