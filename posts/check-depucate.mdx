@@ -1,0 +1,349 @@
+---
+title: check-depucate
+description: "ES查重"
+date: Oct 24 2022
+---
+
+选中部分是SubjectServiceImpl类中的checkDuplicate方法，用于实现课题查重功能。这个方法主要分为三个分支，根据传入的参数不同执行不同的查重逻辑。下面是对代码的详细解释：
+
+1. 方法参数
+- yjnr: 研究内容
+- yjkt: 课题名称
+- multipartFile: 上传的文件
+- id: 课题ID
+- fileId: 文件ID
+2. 方法逻辑
+方法根据fileId和multipartFile参数的不同，分为三个主要分支：
+
+* 分支1：当fileId存在时
+从Elasticsearch中获取文件内容
+创建查重主表数据Duplicate
+获取历史hash值进行查重比较
+计算课题、内容、正文的重复度
+将查重结果插入数据库
+* 分支2：当multipartFile存在时
+上传文件到Elasticsearch并获取文件内容
+创建查重主表数据Duplicate
+获取历史hash值进行查重比较
+计算课题、内容、正文的重复度
+将查重结果插入数据库
+删除临时Elasticsearch索引
+* 分支3：当fileId和multipartFile都不存在时
+创建查重主表数据Duplicate
+获取历史hash值进行查重比较
+计算课题、内容的重复度
+将查重结果插入数据库
+3. 核心功能
+查重比较：使用SimHash算法计算文本的hash值，然后比较不同文本的hash值相似度
+重复度计算：分别计算课题、内容、正文的重复度，并计算综合重复度
+结果存储：将查重结果存储到数据库的主表和子表中
+4. 返回值
+方法返回ResultMsg对象，包含查重结果数据。
+
+5. 代码特点
+使用了Elasticsearch进行文件内容存储和检索
+使用了SimHash算法进行文本相似度计算
+使用了多线程安全的AtomicReference进行重复度统计
+代码结构清晰，分为多个步骤执行查重逻辑
+这个方法主要用于课题查重，通过比较课题名称、研究内容和文件内容的相似度，来判断课题是否存在重复。
+
+
+```
+@Override
+    public ResultMsg checkDuplicate(String yjnr, String yjkt, MultipartFile multipartFile, String id,String fileId) throws IOException {
+
+        if (StringUtils.hasText(fileId)){
+            GetResponse content = ElasticsearchUtils.getContent(achievementsIndex, String.valueOf(fileId));
+            StringBuffer textContent = new StringBuffer(JSONObject.parseObject(JSONObject.toJSONString(content.getSource().get("attachment"))).getString("content"));
+            //填充主表数据
+            long duplicateId = sw.nextId();
+            Duplicate duplicate = new Duplicate();
+            duplicate.setLrsj(new Date());
+            duplicate.setId(duplicateId);
+            duplicate.setKtmc(yjkt);
+            duplicate.setDeleted(false);
+            duplicate.setFkid(id);
+            List<DuplicateSlave> duplicateSlaves = new ArrayList<>();
+
+            //1、获取文件的字数
+
+            int wordCount = textContent.length();
+            duplicate.setKtzs(wordCount);
+            //2、进行查重
+            //2.1获取数据库中历史的hash值
+            // List<Achievements> achievements = achievementsMapper.selectSimHash();
+            List<AttachmentSimhash> attachmentSimhashes = attachmentSimhashMapper.selectSimHash(id);
+
+            //2.1 用于统计课题、内容、正文的比例
+            AtomicReference<Double> countKt = new AtomicReference<>(0.0);
+            AtomicReference<Double> countNr = new AtomicReference<>(0.0);
+            AtomicReference<Double> countZw = new AtomicReference<>(0.0);
+
+            //2.2读取文件内容
+
+
+            //2.3、对当前要查重的课题的内容、课题、正文分别进行hash计算
+            String yjktSimHash = getSimHash(yjkt);
+            String yjnrSimHash = getSimHash(yjnr);
+            String newTextContent = SimHashUtils.get(textContent.toString());
+            if (!ObjectUtils.isEmpty(attachmentSimhashes) && attachmentSimhashes.size() > 0) {
+                //2.4 分别将当前课题和历史课题的内容、课题、正文分别进行hash比较，只要三者中的一个重复度高达百分之八十，就当作这个课题是重复的，其他的两个比例也会带入计算
+                //因为用平均值的话，会对查询结果有很大的影响，正文的查重对比需要比较复杂的算法，短时间内没法实现，目前只是粗略的实现了一下（由于这个需求负责人说不用纠结，因此我先按照我的想法实现）
+                attachmentSimhashes.forEach((item) -> {
+                    String yjkesimhash = item.getYjkesimhash();
+                    String yjnrsimhash = item.getYjnrsimhash();
+                    String zwnrsimhash = item.getZwnrsimhash();
+                    double yjktCalc = 0.0;
+                    if (StringUtils.hasText(yjkesimhash)) {
+                        yjktCalc = SimHashUtils.calculate(yjktSimHash, yjkesimhash);
+                    }
+
+                    double yjnrCalc = 0.0;
+                    if (StringUtils.hasText(yjnrsimhash)) {
+                        yjnrCalc = SimHashUtils.calculate(yjnrSimHash, yjnrsimhash);
+                    }
+
+                    double contentCalc = 0.0;
+                    if (StringUtils.hasText(zwnrsimhash)) {
+                        contentCalc = SimHashUtils.calculate(newTextContent, zwnrsimhash);
+                    }
+
+                    if (yjktCalc > 0.8 || yjnrCalc > 0.8 || contentCalc > 0.8) {
+                        double finalYjktCalc = yjktCalc;
+                        countKt.updateAndGet(v -> (v + finalYjktCalc));
+                        double finalYjnrCalc = yjnrCalc;
+                        countNr.updateAndGet(v -> (v + finalYjnrCalc));
+                        double finalContentCalc = contentCalc;
+                        countZw.updateAndGet(v -> v + finalContentCalc);
+                        //设置该课题的重复的课题数据
+                        DuplicateSlave duplicateSlave = new DuplicateSlave();
+                        duplicateSlave.setFkid(id);
+                        duplicateSlave.setId(sw.nextId());
+                        duplicateSlave.setKtmc(item.getTitle());
+                        //todo
+                        //这个字段来源不清晰
+                        duplicateSlave.setCfktly("外部");
+                        duplicateSlave.setXsd((yjktCalc + yjnrCalc + contentCalc) / 3);
+                        duplicateSlaves.add(duplicateSlave);
+                    }
+
+                });
+
+                //设置主体的重复度的平均值
+                //设置主体的重复度的平均值
+                double nr = (duplicateSlaves.size() == 0.0) ? 0 : (countNr.get() / duplicateSlaves.size());
+                double kt = (duplicateSlaves.size() == 0.0) ? 0 : (countKt.get() / duplicateSlaves.size());
+                double zw = (duplicateSlaves.size() == 0.0) ? 0 : (countZw.get() / duplicateSlaves.size());
+                double zt = (nr + kt + zw == 0.0)? 0.0 : ((nr + kt + zw )/3);
+                duplicate.setYjnrzb(nr);
+                duplicate.setKtmczb(kt);
+                duplicate.setZwzb(zw);
+                duplicate.setZtzb(zt);
+            }
+
+            //3.把数据插入主子表
+            //3.1将结果插入主表
+            duplicateMapper.insert(duplicate);
+            //3.2将结果插入子表
+            duplicateSlaveMapper.insert(duplicateSlaves);
+
+            duplicate.setDuplicateSlaves(duplicateSlaves);
+
+
+            return ResultMsg.setResultData(ResultCodeEnum.SUCCESS, duplicate);
+        }else if (!ObjectUtils.isEmpty(multipartFile)){
+            //填充主表数据
+            long duplicateId = sw.nextId();
+            Duplicate duplicate = new Duplicate();
+            duplicate.setLrsj(new Date());
+            duplicate.setId(duplicateId);
+            duplicate.setKtmc(yjkt);
+            duplicate.setDeleted(false);
+            duplicate.setFkid(id);
+            List<DuplicateSlave> duplicateSlaves = new ArrayList<>();
+
+            //1、获取文件的字数
+
+            int wordCount = getWordCount(multipartFile.getInputStream(), multipartFile.getOriginalFilename());
+            duplicate.setKtzs(wordCount);
+            //2、进行查重
+            //2.1获取数据库中历史的hash值
+            // List<Achievements> achievements = achievementsMapper.selectSimHash();
+            List<AttachmentSimhash> attachmentSimhashes = attachmentSimhashMapper.selectSimHash(id);
+
+            //2.1 用于统计课题、内容、正文的比例
+            AtomicReference<Double> countKt = new AtomicReference<>(0.0);
+            AtomicReference<Double> countNr = new AtomicReference<>(0.0);
+            AtomicReference<Double> countZw = new AtomicReference<>(0.0);
+
+            //2.2读取文件内容，为了方便我直接上传到es，利用es的pipline去读取文件内容生成hash
+            byte[] bytes = multipartFile.getBytes();
+            AttachmentFile attachmentFile = new AttachmentFile();
+            attachmentFile.setFileName(multipartFile.getOriginalFilename());
+            attachmentFile.setId(sw.nextId());
+            ElasticsearchUtils.insertFileToEsByMuti(attachmentFile, "subject", bytes);
+            GetResponse content = ElasticsearchUtils.getContent("subject", String.valueOf(attachmentFile.getId()));
+            String textContent = JSONObject.parseObject(JSONObject.toJSONString(content.getSource().get("attachment"))).getString("content");
+
+
+            //2.3、对当前要查重的课题的内容、课题、正文分别进行hash计算
+            String yjktSimHash = getSimHash(yjkt);
+            String yjnrSimHash = getSimHash(yjnr);
+            String contentSimHash = getSimHash(textContent);
+            if (!ObjectUtils.isEmpty(attachmentSimhashes) && attachmentSimhashes.size() > 0) {
+                //2.4 分别将当前课题和历史课题的内容、课题、正文分别进行hash比较，只要三者中的一个重复度高达百分之八十，就当作这个课题是重复的，其他的两个比例也会带入计算
+                //因为用平均值的话，会对查询结果有很大的影响，正文的查重对比需要比较复杂的算法，短时间内没法实现，目前只是粗略的实现了一下（由于这个需求负责人说不用纠结，因此我先按照我的想法实现）
+                attachmentSimhashes.forEach((item) -> {
+                    String yjkesimhash = item.getYjkesimhash();
+                    String yjnrsimhash = item.getYjnrsimhash();
+                    String zwnrsimhash = item.getZwnrsimhash();
+                    double yjktCalc = 0.0;
+                    if (StringUtils.hasText(yjkesimhash)) {
+                        yjktCalc = SimHashUtils.calculate(yjktSimHash, yjkesimhash);
+                    }
+
+                    double yjnrCalc = 0.0;
+                    if (StringUtils.hasText(yjnrsimhash)) {
+                        yjnrCalc = SimHashUtils.calculate(yjnrSimHash, yjnrsimhash);
+                    }
+
+                    double contentCalc = 0.0;
+                    if (StringUtils.hasText(zwnrsimhash)) {
+                        contentCalc = SimHashUtils.calculate(contentSimHash, zwnrsimhash);
+                    }
+
+                    if (yjktCalc > 0.8 || yjnrCalc > 0.8 || contentCalc > 0.8) {
+                        double finalYjktCalc = yjktCalc;
+                        countKt.updateAndGet(v -> (v + finalYjktCalc));
+                        double finalYjnrCalc = yjnrCalc;
+                        countNr.updateAndGet(v -> (v + finalYjnrCalc));
+                        double finalContentCalc = contentCalc;
+                        countZw.updateAndGet(v -> v + finalContentCalc);
+                        //设置该课题的重复的课题数据
+                        DuplicateSlave duplicateSlave = new DuplicateSlave();
+                        duplicateSlave.setFkid(id);
+                        duplicateSlave.setId(sw.nextId());
+                        duplicateSlave.setKtmc(item.getTitle());
+                        //todo
+                        //这个字段来源不清晰
+                        duplicateSlave.setCfktly("外部");
+                        duplicateSlave.setXsd((yjktCalc + yjnrCalc + contentCalc) / 3);
+                        duplicateSlaves.add(duplicateSlave);
+                    }
+
+                });
+
+                //设置主体的重复度的平均值
+                double nr = (duplicateSlaves.size() == 0.0) ? 0 : (countNr.get() / duplicateSlaves.size());
+                double kt = (duplicateSlaves.size() == 0.0) ? 0 : (countKt.get() / duplicateSlaves.size());
+                double zw = (duplicateSlaves.size() == 0.0) ? 0 : (countZw.get() / duplicateSlaves.size());
+                double zt = (nr + kt + zw == 0.0)? 0.0 : ((nr + kt + zw )/3);
+                duplicate.setYjnrzb(nr);
+                duplicate.setKtmczb(kt);
+                duplicate.setZwzb(zw);
+                duplicate.setZtzb(zt);
+            }
+
+            //3.把数据插入主子表
+            //3.1将结果插入主表
+            duplicateMapper.insert(duplicate);
+            //3.2将结果插入子表
+            duplicateSlaveMapper.insert(duplicateSlaves);
+
+            duplicate.setDuplicateSlaves(duplicateSlaves);
+
+            //删除es的临时索引
+            ElasticsearchUtils.deleteIndex("subject");
+
+            return ResultMsg.setResultData(ResultCodeEnum.SUCCESS, duplicate);
+        }else {
+
+            //填充主表数据
+            long duplicateId = sw.nextId();
+            Duplicate duplicate = new Duplicate();
+            duplicate.setLrsj(new Date());
+            duplicate.setId(duplicateId);
+            duplicate.setKtmc(yjkt);
+            duplicate.setDeleted(false);
+            duplicate.setFkid(id);
+            List<DuplicateSlave> duplicateSlaves = new ArrayList<>();
+
+            //1、获取文件的字数
+
+            //2、进行查重
+            //2.1获取数据库中历史的hash值
+            // List<Achievements> achievements = achievementsMapper.selectSimHash();
+            List<AttachmentSimhash> attachmentSimhashes = attachmentSimhashMapper.selectSimHash(id );
+
+            //2.1 用于统计课题、内容、正文的比例
+            AtomicReference<Double> countKt = new AtomicReference<>(0.0);
+            AtomicReference<Double> countNr = new AtomicReference<>(0.0);
+
+
+            //2.3、对当前要查重的课题的内容、课题、正文分别进行hash计算
+            String yjktSimHash = getSimHash(yjkt);
+            String yjnrSimHash = getSimHash(yjnr);
+
+            if (!ObjectUtils.isEmpty(attachmentSimhashes) && attachmentSimhashes.size() > 0) {
+                //2.4 分别将当前课题和历史课题的内容、课题、正文分别进行hash比较，只要三者中的一个重复度高达百分之八十，就当作这个课题是重复的，其他的两个比例也会带入计算
+                //因为用平均值的话，会对查询结果有很大的影响，正文的查重对比需要比较复杂的算法，短时间内没法实现，目前只是粗略的实现了一下（由于这个需求负责人说不用纠结，因此我先按照我的想法实现）
+                attachmentSimhashes.forEach((item) -> {
+                    String yjkesimhash = item.getYjkesimhash();
+                    String yjnrsimhash = item.getYjnrsimhash();
+                    double yjktCalc = 0.0;
+                    if (StringUtils.hasText(yjkesimhash)) {
+                        yjktCalc = SimHashUtils.calculate(yjktSimHash, yjkesimhash);
+                    }
+
+                    double yjnrCalc = 0.0;
+                    if (StringUtils.hasText(yjnrsimhash)) {
+                        yjnrCalc = SimHashUtils.calculate(yjnrSimHash, yjnrsimhash);
+                    }
+
+
+
+                    if (yjktCalc > 0.8 || yjnrCalc > 0.8 ) {
+                        double finalYjktCalc = yjktCalc;
+                        countKt.updateAndGet(v -> (v + finalYjktCalc));
+                        double finalYjnrCalc = yjnrCalc;
+                        countNr.updateAndGet(v -> (v + finalYjnrCalc));
+
+                        //设置该课题的重复的课题数据
+                        DuplicateSlave duplicateSlave = new DuplicateSlave();
+                        duplicateSlave.setFkid(id);
+                        duplicateSlave.setId(sw.nextId());
+                        duplicateSlave.setKtmc(item.getTitle());
+                        //todo
+                        //这个字段来源不清晰
+                        duplicateSlave.setCfktly("内部");
+                        duplicateSlave.setXsd((yjktCalc + yjnrCalc ) / 2);
+                        duplicateSlaves.add(duplicateSlave);
+                    }
+
+                });
+
+                //设置主体的重复度的平均值
+                //设置主体的重复度的平均值
+                double nr = (duplicateSlaves.size() == 0.0) ? 0 : (countNr.get() / duplicateSlaves.size());
+                double kt = (duplicateSlaves.size() == 0.0) ? 0 : (countKt.get() / duplicateSlaves.size());
+                double zt = (nr + kt  == 0.0)? 0.0 : ((nr + kt  )/2);
+                duplicate.setYjnrzb(nr);
+                duplicate.setKtmczb(kt);
+                duplicate.setZtzb(zt);
+            }
+
+            //3.把数据插入主子表
+            //3.1将结果插入主表
+            duplicateMapper.insert(duplicate);
+            //3.2将结果插入子表
+            duplicateSlaveMapper.insert(duplicateSlaves);
+
+            duplicate.setDuplicateSlaves(duplicateSlaves);
+
+
+            return ResultMsg.setResultData(ResultCodeEnum.SUCCESS, duplicate);
+        }
+```
+
+
+
