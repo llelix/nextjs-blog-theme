@@ -1,0 +1,19 @@
+---
+title: slice
+description: "slice principle"
+date: Oct 24 2025
+---
+
+# go slice
+
+切片的本质 变长的数组  三个成员 cap len array </br> 
+```
+//go 1.20.3 path: /src/runtime/slice.go
+type slice struct {
+ array unsafe.Pointer
+ len   int
+ cap   int
+}
+```
+
+
