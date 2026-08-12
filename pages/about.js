@@ -199,7 +199,7 @@ export default function About({ globalData }) {
               <div key={project.id} className={cardInteractive}>
                 <div className="flex items-center gap-2 mb-3 text-xs font-mono text-slate-500 dark:text-slate-400">
                   <span>{project.id}</span>
-                  <span aria-hidden="true">//</span>
+                  <span className="text-slate-400" aria-hidden="true">/</span>
                   <span>{project.code}</span>
                 </div>
                 <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
