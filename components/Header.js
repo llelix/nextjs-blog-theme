@@ -7,6 +7,14 @@ export default function Header({ name }) {
       <p className="text-2xl text-center dark:text-white">
         <Link href="/">{name}</Link>
       </p>
+      <nav className="flex justify-center mt-4 space-x-6">
+        <Link href="/" className="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary">
+          首页
+        </Link>
+        <Link href="/about" className="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary">
+          关于我
+        </Link>
+      </nav>
     </header>
   );
 }
