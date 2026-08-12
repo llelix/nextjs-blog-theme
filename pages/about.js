@@ -113,7 +113,7 @@ const workExperience = [
 ];
 
 const cardBase =
-  'p-6 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm';
+  'p-6 bg-[#FAF9F5] dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm';
 const cardInteractive = `${cardBase} transition hover:shadow-md`;
 
 export default function About({ globalData }) {
@@ -149,13 +149,13 @@ export default function About({ globalData }) {
           <div className="flex justify-center gap-4">
             <a
               href={`mailto:${profileData.email}`}
-              className="px-4 py-2 text-sm rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-900 transition"
+              className="px-4 py-2 text-sm rounded-lg border border-slate-200 dark:border-slate-800 bg-[#FAF9F5] dark:bg-slate-950 text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-900 transition"
             >
               发邮件
             </a>
             <a
               href={`tel:${profileData.phone}`}
-              className="px-4 py-2 text-sm rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-900 transition"
+              className="px-4 py-2 text-sm rounded-lg border border-slate-200 dark:border-slate-800 bg-[#FAF9F5] dark:bg-slate-950 text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-900 transition"
             >
               打电话
             </a>
