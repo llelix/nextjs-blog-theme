@@ -14,6 +14,9 @@ export default function Header({ name }) {
         <Link href="/about" className="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary">
           关于我
         </Link>
+        <Link href="/resume" className="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary">
+          RESUME
+        </Link>
       </nav>
     </header>
   );

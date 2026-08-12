@@ -5,21 +5,21 @@ import SEO from '../components/SEO';
 import { getGlobalData } from '../utils/global-data';
 
 const profileData = {
-  name: '陈鹏飞',
-  title: 'Agent 开发工程师',
-  bio: '6 年企业系统开发经验，长期深耕 ERP、制造、供应链等复杂业务场景。2024 年起将重心转向 AI 应用落地：基于 LangChain / LangGraph 构建 RAG 问数 Agent，结合 SAP 业务数据实现自然语言查询，并持续探索 Agent 在企业智能化中的工程化落地。',
-  location: '中国 / 深圳',
+  name: 'Pengfei Chen',
+  title: 'AI Agent Engineer',
+  bio: '6 years of enterprise system development experience, with deep expertise in ERP, manufacturing, and supply chain. Since 2024, focused on AI application delivery: building RAG query agents with LangChain / LangGraph, enabling natural-language analytics over SAP business data, and exploring scalable agent engineering in enterprise intelligence.',
+  location: 'China / Shenzhen',
   phone: '13302931959',
   email: 'wowan107@live.com',
-  availability: '求职中，目标岗位：Agent 开发工程师。期望工作地点：深圳、新加坡、香港或远程。',
-  education: '广东海洋大学 · 本科 · 1997年10月',
+  availability: 'Open to opportunities. Target role: Agent Development Engineer. Preferred locations: Shenzhen, Singapore, Hong Kong, or remote.',
+  education: 'Guangdong Ocean University · Bachelor’s · Oct 1997',
 };
 
 const mainDirections = [
-  'Agent架构 /RAG / LangChain / LangGraph / LlamaIndex /PageIndex',
-  'SAP ERP (MM / PP / SD / FICO) 与 ABAP 开发',
-  'AI 问数 / BI 智能助手 / 企业数据自动化',
-  'Python / Go / Java 全栈与后端集成',
+  'Agent Architecture / RAG / LangChain / LangGraph / LlamaIndex',
+  'SAP ERP (MM / PP / SD / FICO) and ABAP Development',
+  'AI Query Agent / BI Intelligent Assistant / Enterprise Data Automation',
+  'Python / Go / Java full-stack and backend integration',
 ];
 
 const longTermSkills = [
@@ -27,88 +27,88 @@ const longTermSkills = [
   'Oracle / SQL Server / MySQL / PL-SQL',
   'LangChain / LangGraph / RAG / MCP',
   'SAP ABAP / BAPI / RFC / SmartForms / ALV',
-  'Docker / CI-CD / 系统集成',
+  'Docker / CI-CD / System Integration',
 ];
 
 const projects = [
   {
     id: 'PROJ_001',
     code: 'HAOYING_BI_AGENT',
-    title: '深圳麦克维尔 · 问数智能 BI Agent',
-    period: '2025.9 — 至今',
-    type: '生产项目',
+    title: 'Shenzhen McQuay · Intelligent BI Query Agent',
+    period: '2025.9 — Present',
+    type: 'Production Project',
     description:
-      '基于 LangChain 自主设计并落地企业级 RAG 问数架构，联动 SAP PP/FI/SD 标准化业务接口，支撑业务人员通过自然语言一键查询生产、销售、财务数据，替代传统报表手动导出模式，大幅提升经营决策效率。',
+      'Independently designed and delivered an enterprise-grade RAG query architecture with LangChain, integrated with standardized SAP PP/FI/SD interfaces. Enabled business users to query production, sales, and financial data through natural language, replacing manual report exports and significantly improving decision-making efficiency.',
     tags: ['RAG', 'LangChain', 'SAP', 'BI Agent', 'Python', 'LLM'],
   },
   {
     id: 'PROJ_002',
     code: 'SALES_CLAIM_PLATFORM',
-    title: '深圳麦克维尔 · 销售认领平台',
+    title: 'Shenzhen McQuay · Sales Claim Platform',
     period: '2025',
-    type: '生产项目',
+    type: 'Production Project',
     description:
-      '主导平台与企业微信深度集成，支持企微消息卡片一键跳转认款；利用 SAP 财务过账 BAPI 实现三大自动过账场景，攻克预付款结转自动化难题；深度优化清账业务规则，独立开发自动清账程序，显著提升财务效率。',
-    tags: ['SAP BAPI', 'Python', 'RPA', '企业微信集成', '财务自动化'],
+      'Led deep integration with WeCom Work, enabling one-click payment claiming via message cards. Implemented three automatic posting scenarios using SAP financial posting BAPIs, solving prepayment结转 automation challenges. Optimized clearing business rules and independently developed automatic clearing programs, significantly improving financial efficiency.',
+    tags: ['SAP BAPI', 'Python', 'RPA', 'WeCom Integration', 'Finance Automation'],
   },
   {
     id: 'PROJ_003',
     code: 'LUZHOU_ERP_IMPL',
-    title: '泸州老窖 SAP 实施项目',
+    title: 'Luzhou Laojiao SAP Implementation Project',
     period: '2023.01 — 2025.8',
-    type: '实施项目',
+    type: 'Implementation Project',
     description:
-      '参与 PP/FICO/MM/SD模块实施，开发 SD 销售订单汇总报表、MM 采购订单增强与库存台帐流向报表、FI 金税导入导出增强与三大报表、PP 周生产计划排产与工单批量拆分、GSP 不合格品报损审批等核心功能。',
+      'Participated in PP/FICO/MM/SD module implementation. Developed SD sales order summary reports, MM purchase order enhancements with inventory flow reports, FI golden tax import/export enhancements with three major financial statements, PP weekly production planning with work order batch splitting, GSP non-conforming product loss approval and other core functionalities.',
     tags: ['SAP', 'ABAP', 'SmartForms', 'BAPI', 'ALV', 'Enhancement', 'RFC'],
   },
   {
     id: 'PROJ_004',
     code: 'JINGTIAN_SAP_OPS',
-    title: '景田百岁山供应链 SAP 运维与条码系统',
+    title: 'Jing Tian Baishuishan Supply Chain SAP Operations and Barcode System',
     period: '2020.7 — 2022.12',
-    type: '运维项目',
+    type: 'Operations Project',
     description:
-      '负责 SAP 与供应链管理系统双向数据集成，基于 RFC 实现采购订单、供应商主数据、入库单据同步；主导条码管理系统定制开发，覆盖收货、发货、退货、移库、批次 FIFO、定位管理等全流程。',
-    tags: ['SAP', 'Java', 'RFC', 'BAPI', '条码系统', '供应链'],
+      'Responsible for bidirectional data integration between SAP and supply chain management system, implementing purchase order, vendor master data, and inbound document synchronization via RFC. Led custom development of barcode management system covering receipt, shipment, return, transfer, batch FIFO, location management and other full-process scenarios.',
+    tags: ['SAP', 'Java', 'RFC', 'BAPI', 'Barcode System', 'Supply Chain'],
   },
 ];
 
 const techArticles = [
   {
-    title: 'SAP RAG 问数实践：从业务数据到大模型问答的工程化路径',
-    description: 'RAG / LangChain / SAP 集成',
+    title: 'SAP RAG Query Practice: Engineering Path from Business Data to LLM Q&A',
+    description: 'RAG / LangChain / SAP Integration',
     link: '#',
   },
   {
-    title: 'ABAP 与 Python 协同：构建企业级财务自动化过账链路',
-    description: 'SAP BAPI / 财务自动化',
+    title: 'ABAP and Python Collaboration: Building Enterprise Finance Automatic Posting Pipeline',
+    description: 'SAP BAPI / Finance Automation',
     link: '#',
   },
   {
-    title: '企业 Agent 性能调优：RAG 准确率、幻觉治理与容错机制',
-    description: 'AI Agent / LLM / 工程化',
+    title: 'Enterprise Agent Performance Tuning: RAG Accuracy, Hallucination Governance and Fault Tolerance',
+    description: 'AI Agent / LLM / Engineering',
     link: '#',
   },
 ];
 
 const workExperience = [
   {
-    company: '浩鲸新智能科技有限公司 · ABAP开发 / Python开发',
-    period: '2025.09 — 至今',
+    company: 'Haoying New Intelligence Technology Co., Ltd. · ABAP Development / Python Development',
+    period: '2025.09 — Present',
     description:
-      '负责深圳麦克维尔问数智能 BI Agent 项目（RAG + LangChain + SAP 集成）、销售认领平台（企微集成 + SAP 财务自动化过账 + 自动清账）、ERP 运维（FI/SD 报表与批量导入）等核心交付。',
+      'Responsible for core deliveries including Shenzhen McQuay intelligent BI query agent project (RAG + LangChain + SAP integration), sales claim platform (WeCom integration + SAP finance automated posting + automatic clearing), and ERP operations (FI/SD reports and batch import).',
   },
   {
-    company: '浙江中拓人力资源有限公司 · ABAP 开发',
+    company: 'Zhejiang Zhongtuo Human Resources Co., Ltd. · ABAP Development',
     period: '2023.01 — 2025.08',
     description:
-      '负责泸州老窖 SAP 实施项目（PP/FICO/MM/SD），涵盖销售订单增强、采购入库单、金税导入、利润报表、生产计划排产、GSP 质量档案等模块开发。',
+      'Responsible for Luzhou Laojiao SAP implementation project (PP/FICO/MM/SD), covering sales order enhancement, purchase inbound documents, golden tax import/export, profit reports, production planning, GSP quality archives and other module development.',
   },
   {
-    company: '深圳市时代微云科技有限公司 · JAVA 开发工程师',
+    company: 'Shenzhen Shi Dai Wei Yun Technology Co., Ltd. · Java Development Engineer',
     period: '2020.07 — 2022.12',
     description:
-      '负责景田百岁山供应链管理系统与 SAP 集成对接（RFC 双向同步）、SAP 条码管理系统定制开发（收货、发货、FIFO、定位管理等）。',
+      'Responsible for supply chain management system and SAP integration (RFC bidirectional synchronization), and SAP barcode management system custom development (receipt, shipment, FIFO, location management, etc.).',
   },
 ];
 
@@ -116,16 +116,15 @@ const cardBase =
   'p-6 bg-[#FAF9F5] dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm';
 const cardInteractive = `${cardBase} transition hover:shadow-md`;
 
-export default function About({ globalData }) {
+export default function Resume({ globalData }) {
   return (
     <Layout>
-      <SEO title={`关于我 - ${globalData.name}`} description={profileData.bio} />
+      <SEO title={`Resume - ${globalData.name}`} description={profileData.bio} />
       <Header name={globalData.name} />
 
       <main className="w-full">
         {/* Profile Section */}
         <section className="mb-16 text-center">
-          {/* <div className="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-tr from-slate-900 to-slate-700 dark:from-slate-200 dark:to-slate-400" /> */}
           <h1 className="mb-2 text-3xl lg:text-4xl font-semibold tracking-tight text-slate-900 dark:text-slate-50">
             {profileData.name}
           </h1>
@@ -151,23 +150,23 @@ export default function About({ globalData }) {
               href={`mailto:${profileData.email}`}
               className="px-4 py-2 text-sm rounded-lg border border-slate-200 dark:border-slate-800 bg-[#FAF9F5] dark:bg-slate-950 text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-900 transition"
             >
-              发邮件
+              Email Me
             </a>
             <a
               href={`tel:${profileData.phone}`}
               className="px-4 py-2 text-sm rounded-lg border border-slate-200 dark:border-slate-800 bg-[#FAF9F5] dark:bg-slate-950 text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-900 transition"
             >
-              打电话
+              Call Me
             </a>
           </div>
         </section>
 
         {/* Skills & Directions */}
         <section className="mb-16">
-          <h2 className="mb-6 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-50">个人技能</h2>
+          <h2 className="mb-6 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-50">Skills & Focus</h2>
           <div className="grid gap-6 md:grid-cols-2">
             <div className={`${cardBase}`}>
-              <h3 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">核心方向</h3>
+              <h3 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">Core Directions</h3>
               <ul className="space-y-3">
                 {mainDirections.map((dir) => (
                   <li key={dir} className="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300">
@@ -178,7 +177,7 @@ export default function About({ globalData }) {
               </ul>
             </div>
             <div className={`${cardBase}`}>
-              <h3 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">技术栈</h3>
+              <h3 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">Tech Stack</h3>
               <ul className="space-y-3">
                 {longTermSkills.map((skill) => (
                   <li key={skill} className="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300">
@@ -193,7 +192,7 @@ export default function About({ globalData }) {
 
         {/* Projects / Case Studies */}
         <section className="mb-16">
-          <h2 className="mb-6 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-50">项目经历</h2>
+          <h2 className="mb-6 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-50">Projects</h2>
           <div className="space-y-6">
             {projects.map((project) => (
               <div key={project.id} className={cardInteractive}>
@@ -227,9 +226,9 @@ export default function About({ globalData }) {
 
         {/* Tech Writing */}
         <section className="mb-16">
-          <h2 className="mb-6 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-50">技术文章</h2>
+          <h2 className="mb-6 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-50">Technical Articles</h2>
           <p className="mb-6 text-slate-600 dark:text-slate-400">
-            聚焦 AI 企业落地、RAG 工程化、SAP 集成与财务自动化等实践，记录真实可复用的方法与取舍。
+            Focusing on AI enterprise adoption, RAG engineering, SAP integration, and finance automation practices, documenting real-world reusable methods and trade-offs.
           </p>
           <div className="space-y-4">
             {techArticles.map((article) => (
@@ -247,7 +246,7 @@ export default function About({ globalData }) {
 
         {/* Work Experience */}
         <section className="mb-16">
-          <h2 className="mb-6 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-50">工作经历</h2>
+          <h2 className="mb-6 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-50">Work Experience</h2>
           <div>
             {workExperience.map((exp, index) => (
               <div
@@ -274,39 +273,39 @@ export default function About({ globalData }) {
 
         {/* Certificates & Self Evaluation */}
         <section className="mb-16">
-          <h2 className="mb-6 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-50">证书与自我评价</h2>
+          <h2 className="mb-6 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-50">Certificates & Self Assessment</h2>
           <div className="grid gap-6 md:grid-cols-2">
             <div className={cardBase}>
-              <h3 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">证书</h3>
+              <h3 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">Certificates</h3>
               <ul className="space-y-2 text-sm text-slate-700 dark:text-slate-300">
                 <li className="flex items-center gap-2">
                   <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-slate-900 dark:bg-slate-100 shrink-0" />
-                  软件设计师（中级职称）
+                  Software Designer (Intermediate Professional Title)
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-slate-900 dark:bg-slate-100 shrink-0" />
-                  CET-6 英语六级
+                  CET-6 (College English Test Band 6)
                 </li>
               </ul>
             </div>
             <div className={cardBase}>
-              <h3 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">自我评价</h3>
+              <h3 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">Self Assessment</h3>
               <ul className="space-y-2 text-sm text-slate-700 dark:text-slate-300">
                 <li className="flex items-center gap-2">
                   <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 shrink-0" />
-                  对 AI、Agent 等技术有深入研究
+                  Deep research and hands-on experience with AI and Agent technologies
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 shrink-0" />
-                  自主学习能力出众，享受团队合作
+                  Strong self-learning ability and a team player
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 shrink-0" />
-                  工作态度好，责任感强，乐于助人
+                  Positive work attitude, strong sense of responsibility, eager to help others
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 shrink-0" />
-                  勇于挑战困难，强烈追求成就
+                  Courageous in facing challenges and strongly achievement-driven
                 </li>
               </ul>
             </div>
